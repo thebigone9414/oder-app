@@ -2,7 +2,7 @@
   "name": "order-app-server",
   "version": "1.0.0",
   "description": "커피 주문 앱 백엔드 서버",
-  "main": "src/index.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js",
