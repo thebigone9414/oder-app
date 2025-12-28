@@ -59,7 +59,9 @@ function OrderStatus({ orders, onUpdateOrderStatus }) {
       return statusOrder[a.status] - statusOrder[b.status]
     }
     // 같은 상태면 최신순
-    return new Date(b.createdAt) - new Date(a.createdAt)
+    const dateA = a.createdAt || a.created_at
+    const dateB = b.createdAt || b.created_at
+    return new Date(dateB) - new Date(dateA)
   })
 
   return (
@@ -71,10 +73,10 @@ function OrderStatus({ orders, onUpdateOrderStatus }) {
         ) : (
           sortedOrders.map(order => (
             <div key={order.id} className="order-item">
-              <div className="order-time">{formatDate(order.createdAt)}</div>
+              <div className="order-time">{formatDate(order.createdAt || order.created_at)}</div>
               <div className="order-details">
                 <div className="order-menu">{formatOrderItems(order.items)}</div>
-                <div className="order-price">{order.totalPrice.toLocaleString()}원</div>
+                <div className="order-price">{(order.totalPrice || order.total_price || 0).toLocaleString()}원</div>
               </div>
               <div className="order-action">
                 {getStatusButton(order)}

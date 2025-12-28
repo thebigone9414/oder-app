@@ -1,61 +1,80 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import MenuCard from './components/MenuCard'
 import ShoppingCart from './components/ShoppingCart'
 import AdminDashboard from './components/AdminDashboard'
 import InventoryStatus from './components/InventoryStatus'
 import OrderStatus from './components/OrderStatus'
+import { menuAPI, orderAPI } from './utils/api'
 import './App.css'
-
-// 임시 메뉴 데이터
-const menuData = [
-  {
-    id: 1,
-    name: '아메리카노(ICE)',
-    price: 4000,
-    description: '시원하고 깔끔한 아이스 아메리카노',
-    image: '/americano-ice.jpg',
-    options: [
-      { id: 'shot', name: '샷 추가', price: 500 },
-      { id: 'syrup', name: '시럽 추가', price: 0 }
-    ]
-  },
-  {
-    id: 2,
-    name: '아메리카노(HOT)',
-    price: 4000,
-    description: '따뜻하고 진한 핫 아메리카노',
-    image: '/americano-hot.jpg',
-    options: [
-      { id: 'shot', name: '샷 추가', price: 500 },
-      { id: 'syrup', name: '시럽 추가', price: 0 }
-    ]
-  },
-  {
-    id: 3,
-    name: '카페라떼',
-    price: 5000,
-    description: '부드러운 우유와 에스프레소의 조화',
-    image: '/caffe-latte.jpg',
-    options: [
-      { id: 'shot', name: '샷 추가', price: 500 },
-      { id: 'syrup', name: '시럽 추가', price: 0 }
-    ]
-  }
-]
-
-// 초기 재고 데이터
-const initialInventory = [
-  { menuId: 1, menuName: '아메리카노(ICE)', stock: 10 },
-  { menuId: 2, menuName: '아메리카노(HOT)', stock: 10 },
-  { menuId: 3, menuName: '카페라떼', stock: 10 }
-]
 
 function App() {
   const [currentPage, setCurrentPage] = useState('order')
   const [cartItems, setCartItems] = useState([])
   const [orders, setOrders] = useState([])
-  const [inventory, setInventory] = useState(initialInventory)
+  const [inventory, setInventory] = useState([])
+  const [menuData, setMenuData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  // 메뉴 데이터 로드
+  useEffect(() => {
+    const loadMenus = async () => {
+      try {
+        setLoading(true)
+        const menus = await menuAPI.getAll()
+        setMenuData(menus)
+        
+        // 재고 정보 추출
+        const inventoryData = menus.map(menu => ({
+          menuId: menu.id,
+          menuName: menu.name,
+          stock: menu.stock
+        }))
+        setInventory(inventoryData)
+        setError(null)
+      } catch (err) {
+        console.error('메뉴 로드 실패:', err)
+        setError('메뉴를 불러오는데 실패했습니다.')
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    loadMenus()
+  }, [])
+
+  // 주문 데이터 로드 (관리자 화면)
+  useEffect(() => {
+    if (currentPage === 'admin') {
+      const loadData = async () => {
+        try {
+          // 주문 데이터 로드
+          const ordersData = await orderAPI.getAll()
+          // API 응답을 프런트엔드 형식으로 변환
+          const convertedOrders = ordersData.map(order => ({
+            ...order,
+            createdAt: order.created_at || order.createdAt,
+            totalPrice: order.total_price || order.totalPrice
+          }))
+          setOrders(convertedOrders)
+          
+          // 재고 정보도 새로고침
+          const menus = await menuAPI.getAll()
+          const inventoryData = menus.map(menu => ({
+            menuId: menu.id,
+            menuName: menu.name,
+            stock: menu.stock
+          }))
+          setInventory(inventoryData)
+        } catch (err) {
+          console.error('데이터 로드 실패:', err)
+        }
+      }
+      
+      loadData()
+    }
+  }, [currentPage])
 
   const handleAddToCart = (item) => {
     // 재고 확인
@@ -96,72 +115,90 @@ function App() {
     setCartItems(prev => prev.filter(item => item.cartId !== cartId))
   }
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     if (cartItems.length === 0) return
 
-    // 재고 확인
-    const stockCheck = cartItems.every(item => {
-      const inventoryItem = inventory.find(inv => inv.menuId === item.menuId)
-      return inventoryItem && inventoryItem.stock >= item.quantity
-    })
+    try {
+      // 주문 데이터 준비
+      const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+      const orderData = {
+        items: cartItems.map(item => ({
+          menu_id: item.menuId,
+          quantity: item.quantity,
+          options: item.options || [],
+          item_price: item.price
+        })),
+        total_price: totalPrice
+      }
 
-    if (!stockCheck) {
-      alert('재고가 부족한 메뉴가 있습니다. 장바구니를 확인해주세요.')
-      return
+      // API 호출
+      const newOrder = await orderAPI.create(orderData)
+
+      // 재고 정보 새로고침
+      const menus = await menuAPI.getAll()
+      const inventoryData = menus.map(menu => ({
+        menuId: menu.id,
+        menuName: menu.name,
+        stock: menu.stock
+      }))
+      setInventory(inventoryData)
+
+      // 장바구니 초기화
+      setCartItems([])
+      alert('주문이 접수되었습니다!')
+      
+      // 관리자 화면이면 주문 목록 새로고침
+      if (currentPage === 'admin') {
+        const ordersData = await orderAPI.getAll()
+        const convertedOrders = ordersData.map(order => ({
+          ...order,
+          createdAt: order.created_at || order.createdAt,
+          totalPrice: order.total_price || order.totalPrice
+        }))
+        setOrders(convertedOrders)
+      }
+    } catch (err) {
+      console.error('주문 실패:', err)
+      alert(err.message || '주문 처리 중 오류가 발생했습니다.')
     }
-
-    // 주문 생성
-    const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-    const newOrder = {
-      id: Date.now() + Math.random(), // 고유 ID
-      createdAt: new Date().toISOString(),
-      status: 'received', // 주문 접수 상태
-      items: cartItems.map(item => ({
-        menuId: item.menuId,
-        menuName: item.menuName,
-        quantity: item.quantity,
-        options: item.options || []
-      })),
-      totalPrice: totalPrice
-    }
-
-    // 재고 차감
-    setInventory(prev =>
-      prev.map(invItem => {
-        const cartItem = cartItems.find(ci => ci.menuId === invItem.menuId)
-        if (cartItem) {
-          return { ...invItem, stock: invItem.stock - cartItem.quantity }
-        }
-        return invItem
-      })
-    )
-
-    // 주문 목록에 추가
-    setOrders(prev => [newOrder, ...prev])
-
-    // 장바구니 초기화
-    setCartItems([])
-    alert('주문이 접수되었습니다!')
   }
 
-  const handleUpdateOrderStatus = (orderId, newStatus) => {
-    setOrders(prev => 
-      prev.map(order => 
-        order.id === orderId 
-          ? { ...order, status: newStatus }
-          : order
+  const handleUpdateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const updatedOrder = await orderAPI.updateStatus(orderId, newStatus)
+      // API 응답을 프런트엔드 형식으로 변환
+      const convertedOrder = {
+        ...updatedOrder,
+        createdAt: updatedOrder.created_at || updatedOrder.createdAt,
+        totalPrice: updatedOrder.total_price || updatedOrder.totalPrice
+      }
+      setOrders(prev => 
+        prev.map(order => 
+          order.id === orderId 
+            ? convertedOrder
+            : order
+        )
       )
-    )
+    } catch (err) {
+      console.error('주문 상태 변경 실패:', err)
+      alert(err.message || '주문 상태 변경 중 오류가 발생했습니다.')
+    }
   }
 
-  const handleUpdateInventory = (menuId, newStock) => {
-    setInventory(prev =>
-      prev.map(item =>
-        item.menuId === menuId
-          ? { ...item, stock: newStock }
-          : item
+  const handleUpdateInventory = async (menuId, newStock) => {
+    try {
+      await menuAPI.updateStock(menuId, newStock)
+      setInventory(prev =>
+        prev.map(item =>
+          item.menuId === menuId
+            ? { ...item, stock: newStock }
+            : item
+        )
       )
-    )
+    } catch (err) {
+      console.error('재고 수정 실패:', err)
+      alert(err.message || '재고 수정 중 오류가 발생했습니다.')
+    }
   }
 
   const handleNavigate = (page) => {
@@ -169,6 +206,29 @@ function App() {
   }
 
   if (currentPage === 'order') {
+    if (loading) {
+      return (
+        <div className="App">
+          <Header currentPage={currentPage} onNavigate={handleNavigate} />
+          <div className="main-container">
+            <p>메뉴를 불러오는 중...</p>
+          </div>
+        </div>
+      )
+    }
+
+    if (error) {
+      return (
+        <div className="App">
+          <Header currentPage={currentPage} onNavigate={handleNavigate} />
+          <div className="main-container">
+            <p style={{ color: 'red' }}>{error}</p>
+            <button onClick={() => window.location.reload()}>다시 시도</button>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div className="App">
         <Header currentPage={currentPage} onNavigate={handleNavigate} />
