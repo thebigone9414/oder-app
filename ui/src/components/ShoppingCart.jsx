@@ -6,8 +6,9 @@ function ShoppingCart({ cartItems, onOrder, onRemoveItem }) {
   }
 
   const formatItemName = (item) => {
-    const optionsText = item.options.length > 0 
-      ? ` (${item.options.map(opt => opt.name).join(', ')})` 
+    const options = item.options || []
+    const optionsText = options.length > 0 
+      ? ` (${options.map(opt => opt.name).join(', ')})` 
       : ''
     return `${item.menuName}${optionsText}`
   }
@@ -19,8 +20,8 @@ function ShoppingCart({ cartItems, onOrder, onRemoveItem }) {
         {cartItems.length === 0 ? (
           <p className="cart-empty">장바구니가 비어있습니다.</p>
         ) : (
-          cartItems.map((item, index) => (
-            <div key={index} className="cart-item">
+          cartItems.map((item) => (
+            <div key={item.cartId || item.menuId} className="cart-item">
               <div className="cart-item-info">
                 <span className="cart-item-name">
                   {formatItemName(item)} X {item.quantity}
@@ -32,7 +33,8 @@ function ShoppingCart({ cartItems, onOrder, onRemoveItem }) {
               {onRemoveItem && (
                 <button 
                   className="remove-item-button"
-                  onClick={() => onRemoveItem(index)}
+                  onClick={() => onRemoveItem(item.cartId || item.menuId)}
+                  aria-label={`${item.menuName} 삭제`}
                 >
                   삭제
                 </button>

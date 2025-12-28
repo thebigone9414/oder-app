@@ -62,3 +62,10 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* 관리자 화면 스타일 */
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}

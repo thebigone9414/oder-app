@@ -22,7 +22,7 @@ function MenuCard({ menu, onAddToCart }) {
     return basePrice + optionsPrice
   }
 
-  const handleAddToCart = () => {
+  const handleAddToCartClick = () => {
     const item = {
       menuId: menu.id,
       menuName: menu.name,
@@ -55,12 +55,17 @@ function MenuCard({ menu, onAddToCart }) {
                 type="checkbox"
                 checked={selectedOptions.includes(option.id)}
                 onChange={() => handleOptionChange(option.id)}
+                aria-label={option.name}
               />
               <span>{option.name} {option.price > 0 && `(+${option.price.toLocaleString()}원)`}</span>
             </label>
           ))}
         </div>
-        <button className="add-to-cart-button" onClick={handleAddToCart}>
+        <button 
+          className="add-to-cart-button" 
+          onClick={handleAddToCartClick}
+          aria-label={`${menu.name} 담기`}
+        >
           담기
         </button>
       </div>

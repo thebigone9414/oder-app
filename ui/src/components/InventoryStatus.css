@@ -1,0 +1,112 @@
+.inventory-status {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.inventory-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.inventory-card {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.inventory-menu-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.inventory-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inventory-stock {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.inventory-status-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-normal {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-warning {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-out {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.inventory-controls {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.inventory-button {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #0066cc;
+  background-color: white;
+  color: #0066cc;
+  border-radius: 4px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.inventory-button:hover:not(:disabled) {
+  background-color: #0066cc;
+  color: white;
+}
+
+.inventory-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #ccc;
+  color: #ccc;
+}
+
+@media (max-width: 768px) {
+  .inventory-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
