@@ -1,0 +1,16 @@
+# 프런트엔드 전용 Render 설정
+# 이 파일은 ui 폴더에 위치하며, 프런트엔드만 배포할 때 사용합니다.
+
+services:
+  - type: web
+    name: order-app-frontend
+    env: static
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://order-app-backend.onrender.com/api
+        # 백엔드 URL을 실제 배포된 URL로 변경하세요
+

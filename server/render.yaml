@@ -1,0 +1,17 @@
+# 백엔드 서버 전용 Render 설정
+# 이 파일은 server 폴더에 위치하며, 백엔드만 배포할 때 사용합니다.
+
+services:
+  - type: web
+    name: order-app-backend
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+

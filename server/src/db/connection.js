@@ -6,17 +6,34 @@ dotenv.config()
 
 const { Pool } = pg
 
+// Render.com에서 제공하는 DATABASE_URL이 있으면 사용, 없으면 개별 환경 변수 사용
+let poolConfig
+
+if (process.env.DATABASE_URL) {
+  // Render.com의 DATABASE_URL 사용
+  poolConfig = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  }
+} else {
+  // 개별 환경 변수 사용 (로컬 개발)
+  poolConfig = {
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT) || 5432,
+    database: process.env.DB_NAME || 'order_app',
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || '',
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  }
+}
+
 // PostgreSQL 연결 풀 생성
-const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT) || 5432,
-  database: process.env.DB_NAME || 'order_app',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || '',
-  max: 20, // 최대 연결 수
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-})
+const pool = new Pool(poolConfig)
 
 // 연결 테스트 함수
 export const testConnection = async () => {

@@ -6,6 +6,12 @@ dotenv.config()
 const { Client } = pg
 
 async function createDatabase() {
+  // Render.com에서는 DATABASE_URL을 사용하지 않고, 로컬 개발 환경에서만 사용
+  if (process.env.DATABASE_URL) {
+    console.log('Render.com 환경에서는 데이터베이스가 이미 생성되어 있습니다.')
+    process.exit(0)
+  }
+
   // postgres 데이터베이스에 연결 (기본 데이터베이스)
   const adminClient = new Client({
     host: process.env.DB_HOST || 'localhost',
