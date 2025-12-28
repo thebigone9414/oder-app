@@ -9,8 +9,9 @@ services:
     region: oregon
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
+    # Root Directory는 render.yaml이 있는 위치 기준이므로 ui 폴더에 있으면 자동으로 인식
     envVars:
       - key: VITE_API_URL
         value: https://order-app-backend.onrender.com/api
-        # 백엔드 URL을 실제 배포된 URL로 변경하세요
+        # ⚠️ 중요: 백엔드 URL을 실제 배포된 URL로 변경하세요
 
