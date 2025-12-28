@@ -54,9 +54,9 @@
    - **Publish Directory**: `dist`
 4. **환경 변수 추가**:
    ```
-   VITE_API_URL=https://order-app-backend.onrender.com/api
+   VITE_API_URL=https://oder-app-backend.onrender.com/api
    ```
-   ⚠️ **중요**: `order-app-backend.onrender.com`을 2단계에서 생성한 실제 백엔드 URL로 변경하세요!
+   ⚠️ **중요**: 실제 백엔드 URL은 `https://oder-app-backend.onrender.com`입니다. `/api`를 포함해야 합니다!
 5. "Create Static Site" 클릭
 6. 배포 완료 후 URL 확인 (예: `https://order-app-frontend.onrender.com`)
 

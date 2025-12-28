@@ -9,7 +9,7 @@
 
 ### 2. 백엔드 URL 확인
 - 백엔드 서버가 Render.com에 배포되어 있어야 합니다
-- 백엔드 URL을 확인하세요 (예: `https://order-app-backend.onrender.com`)
+- 백엔드 URL을 확인하세요: `https://oder-app-backend.onrender.com`
 
 ## 🚀 Render.com 배포 과정
 
@@ -41,13 +41,12 @@
 **Environment Variables 섹션에서 추가:**
 
 ```
-VITE_API_URL=https://your-backend-url.onrender.com/api
+VITE_API_URL=https://oder-app-backend.onrender.com/api
 ```
 
 ⚠️ **중요 사항:**
-- `your-backend-url.onrender.com`을 실제 백엔드 URL로 변경하세요
-- 예: `https://order-app-backend.onrender.com/api`
-- `https://`와 `/api`를 포함해야 합니다
+- 실제 백엔드 URL: `https://oder-app-backend.onrender.com`
+- 환경 변수 값: `https://oder-app-backend.onrender.com/api` (⚠️ `/api` 포함 필수)
 - 환경 변수 이름은 반드시 `VITE_`로 시작해야 합니다 (Vite 요구사항)
 
 ### 4단계: 배포 실행
@@ -130,7 +129,7 @@ VITE_API_URL=https://your-backend-url.onrender.com/api
 
 **프런트엔드 (Static Site):**
 ```
-VITE_API_URL=https://order-app-backend.onrender.com/api
+VITE_API_URL=https://oder-app-backend.onrender.com/api
 ```
 
 **백엔드 (Web Service):**
@@ -143,8 +142,8 @@ DATABASE_URL=<자동 설정 또는 수동>
 
 ### URL 예시
 
-- 프런트엔드: `https://order-app-frontend.onrender.com`
-- 백엔드 API: `https://order-app-backend.onrender.com`
-- 헬스 체크: `https://order-app-backend.onrender.com/health`
-- 메뉴 API: `https://order-app-backend.onrender.com/api/menus`
+- 프런트엔드: `https://order-app-frontend.onrender.com` (배포 후 확인)
+- 백엔드 API: `https://oder-app-backend.onrender.com`
+- 헬스 체크: `https://oder-app-backend.onrender.com/health`
+- 메뉴 API: `https://oder-app-backend.onrender.com/api/menus`
 
