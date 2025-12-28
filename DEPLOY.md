@@ -41,10 +41,10 @@
    - **Name**: `order-app-backend` (또는 원하는 이름)
    - **Region**: 데이터베이스와 같은 지역 선택
    - **Branch**: `main` (또는 기본 브랜치)
-   - **Root Directory**: `server`
+   - **Root Directory**: `server` ⚠️ **중요: 반드시 설정**
    - **Environment**: `Node`
    - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
+   - **Start Command**: `npm start` ⚠️ **중요: `node index.js`가 아닌 `npm start` 또는 `node src/index.js`**
    - **Plan**: Free 또는 원하는 플랜 선택
 
 4. **환경 변수 설정**

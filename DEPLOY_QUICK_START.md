@@ -18,10 +18,10 @@
 2. GitHub 저장소 연결
 3. 설정:
    - **Name**: `order-app-backend`
-   - **Root Directory**: `server`
+   - **Root Directory**: `server` ⚠️ **중요: 반드시 설정**
    - **Environment**: `Node`
    - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
+   - **Start Command**: `npm start` ⚠️ **중요: `node index.js`가 아닌 `npm start` 또는 `node src/index.js`**
 4. **환경 변수 추가** (Environment 섹션):
    ```
    NODE_ENV=production

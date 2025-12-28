@@ -17,6 +17,7 @@ services:
     region: oregon
     buildCommand: npm install
     startCommand: npm start
+    # 또는 직접 실행: startCommand: node src/index.js
     rootDir: server
     envVars:
       - key: NODE_ENV
