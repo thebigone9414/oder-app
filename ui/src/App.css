@@ -1,0 +1,64 @@
+.App {
+  min-height: 100vh;
+  background-color: #fafafa;
+}
+
+.main-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.menu-section {
+  flex: 1;
+}
+
+.section-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.cart-section {
+  width: 350px;
+  position: sticky;
+  top: 80px;
+  height: fit-content;
+  max-height: calc(100vh - 100px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .main-container {
+    flex-direction: column;
+  }
+
+  .cart-section {
+    width: 100%;
+    position: relative;
+    top: 0;
+  }
+
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    padding: 1rem;
+  }
+
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+}
